@@ -1,10 +1,17 @@
 package users
 
-import "github.com/gin-gonic/gin"
+import (
+	"boockstore-user-api/domain/users"
+	"io/ioutil"
+	"net/http"
 
-import "net/http"
+	"github.com/gin-gonic/gin"
+)
 
 func CreateUser(c *gin.Context) {
+	var user users.User
+
+	bytes, err := ioutil.ReadAll(c.Request.Body)
 	c.String(http.StatusNotImplemented, "Implement me!")
 }
 func GetUser(c *gin.Context) {
