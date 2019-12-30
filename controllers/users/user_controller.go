@@ -2,7 +2,8 @@ package users
 
 import (
 	"boockstore-user-api/domain/users"
-	"io/ioutil"
+	"boockstore-user-api/services"
+	"boockstore-user-api/utils/errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,9 +11,20 @@ import (
 
 func CreateUser(c *gin.Context) {
 	var user users.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		restErr := errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Status, restErr)
+		return
+	}
 
-	bytes, err := ioutil.ReadAll(c.Request.Body)
-	c.String(http.StatusNotImplemented, "Implement me!")
+	result, saveErr := services.CreateUser(user)
+	if saveErr != nil {
+		c.JSON(saveErr.Status, saveErr)
+		return
+	}
+
+	c.JSON(http.StatusCreated, result)
+
 }
 func GetUser(c *gin.Context) {
 	c.String(http.StatusNotImplemented, "Implement me!")
