@@ -1,6 +1,7 @@
 package users
 
 import (
+	"boockstore-user-api/utils/date_utils"
 	"boockstore-user-api/utils/errors"
 	"fmt"
 )
@@ -9,7 +10,7 @@ var(
 	usersDb = make(map[int64]*User)
 )
 
-func (user User)Get() *errors.RestErr{
+func (user *User)Get() *errors.RestErr{
 	result := usersDb[user.Id]
 	if result == nil {
 		return  errors.NewNotFoundError(fmt.Sprintf("user %d not found", user.Id))
@@ -31,6 +32,8 @@ func (user User)Save() *errors.RestErr {
 		}
 		return errors.NewBadRequestError(fmt.Sprintf("user %d already exists", user.Id))
 	}
+
+	user.DateCreated = date_utils.GetNowString()
 
 	usersDb[user.Id] = &user
 	return nil
